@@ -1,7 +1,7 @@
-package com.doljabi.Outdoor_Escape_Room.security.service;
+package com.doljabi.Outdoor_Escape_Room.common.security.service;
 
-import com.doljabi.Outdoor_Escape_Room.entity.User;
-import com.doljabi.Outdoor_Escape_Room.repository.UserRepository;
+import com.doljabi.Outdoor_Escape_Room.user.domain.User;
+import com.doljabi.Outdoor_Escape_Room.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

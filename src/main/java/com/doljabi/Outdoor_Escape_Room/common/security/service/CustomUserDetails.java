@@ -1,6 +1,6 @@
-package com.doljabi.Outdoor_Escape_Room.security.service;
+package com.doljabi.Outdoor_Escape_Room.common.security.service;
 
-import com.doljabi.Outdoor_Escape_Room.entity.User;
+import com.doljabi.Outdoor_Escape_Room.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

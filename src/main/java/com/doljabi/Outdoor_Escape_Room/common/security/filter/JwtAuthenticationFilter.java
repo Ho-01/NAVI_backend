@@ -1,7 +1,7 @@
-package com.doljabi.Outdoor_Escape_Room.security.filter;
+package com.doljabi.Outdoor_Escape_Room.common.security.filter;
 
-import com.doljabi.Outdoor_Escape_Room.security.service.CustomUserDetailsService;
-import com.doljabi.Outdoor_Escape_Room.security.util.JwtTokenUtil;
+import com.doljabi.Outdoor_Escape_Room.common.security.util.JwtTokenUtil;
+import com.doljabi.Outdoor_Escape_Room.common.security.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

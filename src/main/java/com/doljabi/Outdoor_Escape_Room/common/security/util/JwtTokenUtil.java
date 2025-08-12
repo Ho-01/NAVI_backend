@@ -1,4 +1,4 @@
-package com.doljabi.Outdoor_Escape_Room.security.util;
+package com.doljabi.Outdoor_Escape_Room.common.security.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

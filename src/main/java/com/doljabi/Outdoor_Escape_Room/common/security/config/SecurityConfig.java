@@ -1,6 +1,6 @@
-package com.doljabi.Outdoor_Escape_Room.security.config;
+package com.doljabi.Outdoor_Escape_Room.common.security.config;
 
-import com.doljabi.Outdoor_Escape_Room.security.filter.JwtAuthenticationFilter;
+import com.doljabi.Outdoor_Escape_Room.common.security.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
