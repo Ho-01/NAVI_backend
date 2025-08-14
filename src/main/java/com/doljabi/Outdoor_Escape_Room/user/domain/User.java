@@ -26,4 +26,8 @@ public class User {
         this.provider = provider;
         this.externalId = externalId;
     }
+
+    public void updateUser(String name){
+        this.name = name;
+    }
 }
