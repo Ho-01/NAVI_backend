@@ -1,5 +1,7 @@
 package com.doljabi.Outdoor_Escape_Room.auth.infra;
 
+import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
+import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -26,11 +28,11 @@ public class GoogleTokenVerifier {
         try{
             GoogleIdToken token = verifier.verify(idToken);
             if(token == null){
-                throw new IllegalArgumentException("유효하지 않음 Google ID token 입니다");
+                throw new AppException(GlobalErrorCode.INVALID_ID_TOKEN);
             }
             return token.getPayload().getSubject();
         } catch (GeneralSecurityException | IOException e){
-            throw new IllegalStateException("Google ID token 검증 실패", e);
+            throw new AppException(GlobalErrorCode.INVALID_ID_TOKEN);
         }
     }
 }

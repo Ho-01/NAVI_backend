@@ -6,12 +6,15 @@ import com.doljabi.Outdoor_Escape_Room.auth.infra.GoogleTokenVerifier;
 import com.doljabi.Outdoor_Escape_Room.auth.infra.KakaoTokenVerifier;
 import com.doljabi.Outdoor_Escape_Room.auth.presentation.dto.response.LoginResponse;
 import com.doljabi.Outdoor_Escape_Room.auth.presentation.dto.response.TokenResponse;
+import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
+import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import com.doljabi.Outdoor_Escape_Room.common.security.util.JwtTokenUtil;
 import com.doljabi.Outdoor_Escape_Room.user.domain.Provider;
 import com.doljabi.Outdoor_Escape_Room.user.domain.User;
 import com.doljabi.Outdoor_Escape_Room.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -26,6 +29,7 @@ public class AuthService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Transactional
     public LoginResponse loginWithGoogle(String idToken) {
         String sub = googleTokenVerifier.verify(idToken);
         User user = userRepository.findByProviderAndExternalId(Provider.GOOGLE, sub)
@@ -45,18 +49,45 @@ public class AuthService {
                 accessToken,
                 refreshToken
         );
-
     }
 
+    @Transactional
     public LoginResponse loginWithKakao(String accessToken) {
         return new LoginResponse(Provider.KAKAO,"","","");
     }
 
+    @Transactional
     public TokenResponse reissueTokens(String refreshToken) {
-        return new TokenResponse("","");
+        jwtTokenUtil.validateRefreshToken(refreshToken);
+        Long userId = jwtTokenUtil.extractUserId(refreshToken);
+
+        RefreshToken stored = refreshTokenRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN));
+        if(!refreshToken.equals(stored.getRefreshToken())){
+            refreshTokenRepository.deleteByUserId(userId);
+            throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        refreshTokenRepository.deleteByUserId(userId);
+        String newAccessToken = jwtTokenUtil.generateAccessToken(userId);
+        String newRefreshToken = jwtTokenUtil.generateRefreshToken(userId);
+        refreshTokenRepository.save(new RefreshToken(stored.getUser(), newRefreshToken));
+        return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
+    @Transactional
     public String logout(String refreshToken) {
-        return "";
+        jwtTokenUtil.validateRefreshToken(refreshToken);
+        Long userId = jwtTokenUtil.extractUserId(refreshToken);
+
+        RefreshToken stored = refreshTokenRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN));
+        if(!refreshToken.equals(stored.getRefreshToken())){
+            refreshTokenRepository.deleteByUserId(userId);
+            throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        refreshTokenRepository.deleteByUserId(userId);
+        return "로그아웃 성공";
     }
 }

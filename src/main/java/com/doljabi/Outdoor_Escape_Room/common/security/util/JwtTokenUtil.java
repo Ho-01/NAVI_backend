@@ -1,5 +1,7 @@
 package com.doljabi.Outdoor_Escape_Room.common.security.util;
 
+import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
+import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -43,20 +45,20 @@ public class JwtTokenUtil {
     public void validateAccessToken(String jwtToken){
         String type = getClaims(jwtToken).get("type", String.class);
         if(!type.equals("access")){
-            throw new IllegalArgumentException("accessToken이 아님");
+            throw new AppException(GlobalErrorCode.UNAUTHORIZED);
         }
         if(getClaims(jwtToken).getExpiration().before(new Date())){
-            throw new IllegalArgumentException("만료된 토큰입니다");
+            throw new AppException(GlobalErrorCode.UNAUTHORIZED);
         }
     }
 
     public void validateRefreshToken(String jwtToken){
         String type = getClaims(jwtToken).get("type", String.class);
         if(!type.equals("refresh")){
-            throw new IllegalArgumentException("refreshToken이 아님");
+            throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
         }
         if(getClaims(jwtToken).getExpiration().before(new Date())){
-            throw new IllegalArgumentException("만료된 토큰입니다");
+            throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
         }
     }
 
