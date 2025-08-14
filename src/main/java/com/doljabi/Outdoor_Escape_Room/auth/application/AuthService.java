@@ -77,17 +77,17 @@ public class AuthService {
 
     @Transactional
     public String logout(String refreshToken) {
-        jwtTokenUtil.validateRefreshToken(refreshToken);
-        Long userId = jwtTokenUtil.extractUserId(refreshToken);
+        try{
+            jwtTokenUtil.validateRefreshToken(refreshToken);
+            Long userId = jwtTokenUtil.extractUserId(refreshToken);
 
-        RefreshToken stored = refreshTokenRepository.findByUserId(userId)
-                .orElseThrow(() -> new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN));
-        if(!refreshToken.equals(stored.getRefreshToken())){
-            refreshTokenRepository.deleteByUserId(userId);
-            throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
+            long deleted = refreshTokenRepository.deleteByUserIdAndRefreshToken(userId, refreshToken);
+            if(deleted == 0){
+                refreshTokenRepository.deleteByUserId(userId);
+            }
+        }catch(Exception ignore){
+            // 항상 성공으로 응답하여 상태 은닉
         }
-
-        refreshTokenRepository.deleteByUserId(userId);
         return "로그아웃 성공";
     }
 }
