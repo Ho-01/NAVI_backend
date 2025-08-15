@@ -1,4 +1,4 @@
-package com.doljabi.Outdoor_Escape_Room.runs.domain;
+package com.doljabi.Outdoor_Escape_Room.run.domain;
 
 import com.doljabi.Outdoor_Escape_Room.user.domain.User;
 import jakarta.persistence.*;

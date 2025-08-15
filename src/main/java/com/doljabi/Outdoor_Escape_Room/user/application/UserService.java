@@ -17,6 +17,7 @@ public class UserService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional(readOnly = true)
     public ProfileResponse findUserProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new AppException(GlobalErrorCode.USER_NOT_FOUND));

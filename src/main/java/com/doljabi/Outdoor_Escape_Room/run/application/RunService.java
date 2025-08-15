@@ -1,13 +1,13 @@
-package com.doljabi.Outdoor_Escape_Room.runs.application;
+package com.doljabi.Outdoor_Escape_Room.run.application;
 
 import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
 import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Run;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.RunRepository;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Status;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.ClearedRunResponse;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.InProgressRunResponse;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.LeaderboardResponse;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
+import com.doljabi.Outdoor_Escape_Room.run.domain.RunRepository;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Status;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.ClearedRunResponse;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunResponse;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.LeaderboardResponse;
 import com.doljabi.Outdoor_Escape_Room.user.domain.User;
 import com.doljabi.Outdoor_Escape_Room.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,13 @@ public class RunService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public LeaderboardResponse findLeaderBoard() {
         List<Run> topRuns = runRepository.findTop20ByStatusOrderByTotalPlayMsAsc(Status.CLEARED);
         return LeaderboardResponse.fromEntityList(topRuns);
     }
 
+    @Transactional(readOnly = true)
     public InProgressRunResponse findMyGame(Long userId) {
         return runRepository.findByUserIdAndStatus(userId, Status.IN_PROGRESS)
                 .map(InProgressRunResponse::fromEntity)

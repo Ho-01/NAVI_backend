@@ -1,11 +1,11 @@
-package com.doljabi.Outdoor_Escape_Room.runs.presentation;
+package com.doljabi.Outdoor_Escape_Room.run.presentation;
 
 import com.doljabi.Outdoor_Escape_Room.common.api.ApiResponse;
 import com.doljabi.Outdoor_Escape_Room.common.security.service.CustomUserDetails;
-import com.doljabi.Outdoor_Escape_Room.runs.application.RunService;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.ClearedRunResponse;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.InProgressRunResponse;
-import com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response.LeaderboardResponse;
+import com.doljabi.Outdoor_Escape_Room.run.application.RunService;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.ClearedRunResponse;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunResponse;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.LeaderboardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

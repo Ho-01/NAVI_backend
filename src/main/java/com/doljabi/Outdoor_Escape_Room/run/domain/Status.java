@@ -1,4 +1,4 @@
-package com.doljabi.Outdoor_Escape_Room.runs.domain;
+package com.doljabi.Outdoor_Escape_Room.run.domain;
 
 public enum Status {
     IN_PROGRESS,
