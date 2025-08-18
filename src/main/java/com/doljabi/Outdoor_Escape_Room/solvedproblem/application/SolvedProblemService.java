@@ -4,9 +4,9 @@ import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
 import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import com.doljabi.Outdoor_Escape_Room.problem.domain.Problem;
 import com.doljabi.Outdoor_Escape_Room.problem.domain.ProblemRepository;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Run;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.RunRepository;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Status;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
+import com.doljabi.Outdoor_Escape_Room.run.domain.RunRepository;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Status;
 import com.doljabi.Outdoor_Escape_Room.solvedproblem.domain.SolvedProblem;
 import com.doljabi.Outdoor_Escape_Room.solvedproblem.domain.SolvedProblemRepository;
 import com.doljabi.Outdoor_Escape_Room.solvedproblem.presentation.dto.request.SolveProblemRequest;
@@ -40,14 +40,14 @@ public class SolvedProblemService {
     }
 
     @Transactional
-    public SolveResultResponse submitAnswer(Long userId, SolveProblemRequest req){
+    public SolveResultResponse submitAnswer(Long userId, Long problemId, String answer){
         Run run = runRepository.findByUserIdAndStatus(userId, Status.IN_PROGRESS)
                 .orElseThrow(() -> new AppException(GlobalErrorCode.RUN_NOT_FOUND));
 
-        Problem problem = problemRepository.findById(req.getProblemId())
+        Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new AppException(GlobalErrorCode.PROBLEM_NOT_FOUND));
 
-        boolean correct = normalize(req.getAnswer()).equals(normalize(problem.getAnswer()));
+        boolean correct = normalize(answer).equals(normalize(problem.getAnswer()));
         if (correct) {
             solvedProblemRepository.findByRunIdAndProblemId(run.getId(), problem.getId())
                     .orElseGet(() -> solvedProblemRepository.save(

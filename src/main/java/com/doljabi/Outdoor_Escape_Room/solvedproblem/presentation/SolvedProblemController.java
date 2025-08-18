@@ -21,7 +21,9 @@ public class SolvedProblemController {
     }
 
     @PostMapping("/runs/in_progress/solved_problems")
-    public ApiResponse<SolveResultResponse> solveProblem(@AuthenticationPrincipal CustomUserDetails user,@RequestBody SolveProblemRequest request){
-        return ApiResponse.success(solvedProblemService.submitAnswer(user.getUserId(), request));
+    public ApiResponse<SolveResultResponse> solveProblem(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody SolveProblemRequest request){
+        return ApiResponse.success(solvedProblemService.submitAnswer(user.getUserId(), request.getProblemId(), request.getAnswer()));
     }
 }

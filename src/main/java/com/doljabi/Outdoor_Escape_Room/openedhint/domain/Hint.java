@@ -1,7 +1,6 @@
-package com.doljabi.Outdoor_Escape_Room.solvedproblem.domain;
+package com.doljabi.Outdoor_Escape_Room.openedhint.domain;
 
 import com.doljabi.Outdoor_Escape_Room.problem.domain.Problem;
-import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,15 +9,20 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class SolvedProblem {
+@Table(name = "hint",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"problem_id", "seq"})
+)
+public class Hint {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "run_id", nullable = false)
-    private Run run;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @Column(name = "hint", nullable = false)
+    private String hint;
+
+    @Column(name = "seq", nullable = false)
+    private int seq;
 }

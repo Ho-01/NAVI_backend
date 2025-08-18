@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "inventory",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "item_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "item_id"})
+)
 public class Inventory {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

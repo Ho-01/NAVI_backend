@@ -22,6 +22,6 @@ public class OpenedHintController {
 
     @PostMapping("/runs/in_progress/opened_hints")
     public ApiResponse<UseHintResponse> useHint(@AuthenticationPrincipal CustomUserDetails user,@RequestBody UseHintRequest request) {
-        return ApiResponse.success(openedHintService.useHint(user.getUserId(), request));
+        return ApiResponse.success(openedHintService.useHint(user.getUserId(), request.getProblemId()));
     }
 }

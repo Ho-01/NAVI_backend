@@ -15,7 +15,7 @@ public enum GlobalErrorCode {
     IN_PROGRESS_RUN_EXISTS("IN_PROGRESS_RUN_EXISTS", "이미 진행 중인 게임이 존재합니다", HttpStatus.CONFLICT),
     RUN_NOT_FOUND("RUN_NOT_FOUND", "요청한 게임을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
     INVALID_STATE_TRANSITION("INVALID_STATE_TRANSITION", "이미 CLEARED 상태입니다", HttpStatus.CONFLICT),
-    INVALID_STATE("INVALID_STATE", "진행중인 게임이 없거나, 존재하지 않는 아이템이거나, 결과 수량이 음수가 됩니다", HttpStatus.CONFLICT);
+    INVALID_STATE("INVALID_STATE", "진행중인 게임이 없거나, 존재하지 않는 아이템이거나, 결과 수량이 음수가 됩니다", HttpStatus.CONFLICT),
     PROBLEM_NOT_FOUND("PROBLEM_NOT_FOUND","문제를 찾을 수 없습니다",HttpStatus.NOT_FOUND);
 
     public final String code;

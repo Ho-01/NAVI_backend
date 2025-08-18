@@ -1,9 +1,6 @@
 package com.doljabi.Outdoor_Escape_Room.problem.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +16,9 @@ public class Problem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "number", nullable = false, unique = true)
     private int number;       // 문제 번호
-    private String hintText;  // 힌트(현 정책상 255자 이내)
+
+    @Column(name = "answer", nullable = false)
     private String answer;    // 정답
 }

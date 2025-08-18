@@ -2,11 +2,11 @@ package com.doljabi.Outdoor_Escape_Room.openedhint.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import java.util.List;
 
 @Getter
 @Builder
-public class OpenedHintsResponse {
-    private Long runId;
-    private List<HintDetail> hints;
+public class HintDetail {
+    private Long problemId;
+    private int seq;
+    private String hint;
 }
