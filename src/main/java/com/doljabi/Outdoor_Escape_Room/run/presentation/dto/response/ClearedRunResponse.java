@@ -1,8 +1,7 @@
-package com.doljabi.Outdoor_Escape_Room.runs.presentation.dto.response;
+package com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response;
 
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Run;
-import com.doljabi.Outdoor_Escape_Room.runs.domain.Status;
-import com.google.api.client.util.DateTime;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
