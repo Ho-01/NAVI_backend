@@ -10,6 +10,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Table(name = "solved_problem",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "problem_id"})
+)
 public class SolvedProblem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
