@@ -28,11 +28,11 @@ public class GoogleTokenVerifier {
         try{
             GoogleIdToken token = verifier.verify(idToken);
             if(token == null){
-                throw new AppException(GlobalErrorCode.INVALID_ID_TOKEN);
+                throw new AppException(GlobalErrorCode.INVALID_GOOGLE_ID_TOKEN);
             }
             return token.getPayload().getSubject();
         } catch (GeneralSecurityException | IOException e){
-            throw new AppException(GlobalErrorCode.INVALID_ID_TOKEN);
+            throw new AppException(GlobalErrorCode.INVALID_GOOGLE_ID_TOKEN);
         }
     }
 }

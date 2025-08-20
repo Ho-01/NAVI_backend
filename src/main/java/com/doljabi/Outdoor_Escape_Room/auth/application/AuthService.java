@@ -30,6 +30,15 @@ public class AuthService {
     private JwtTokenUtil jwtTokenUtil;
 
     @Transactional
+    public LoginResponse createGuest() {
+        User user = userRepository.save(new User(null, null));
+        String accessToken = jwtTokenUtil.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenUtil.generateRefreshToken(user.getId());
+        refreshTokenRepository.save(new RefreshToken(user, refreshToken));
+        return new LoginResponse(null, "guest", accessToken, refreshToken);
+    }
+
+    @Transactional
     public LoginResponse loginWithGoogle(String idToken) {
         String sub = googleTokenVerifier.verify(idToken);
         User user = userRepository.findByProviderAndExternalId(Provider.GOOGLE, sub)
@@ -43,17 +52,43 @@ public class AuthService {
         refreshTokenRepository.deleteByUserId(user.getId());
         refreshTokenRepository.save(new RefreshToken(user, refreshToken));
 
-        return new LoginResponse(
-                user.getProvider(),
-                user.getName(),
-                accessToken,
-                refreshToken
-        );
+        return new LoginResponse(user.getProvider(), user.getName(), accessToken, refreshToken);
     }
 
     @Transactional
     public LoginResponse loginWithKakao(String accessToken) {
         return new LoginResponse(Provider.KAKAO,"","","");
+    }
+
+    @Transactional
+    public LoginResponse linkWithGoogle(Long userId, String idToken) {
+        String sub = googleTokenVerifier.verify(idToken);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(GlobalErrorCode.UNAUTHORIZED));
+        if(user.getProvider()!=null){
+            throw new AppException(GlobalErrorCode.MULTIPLE_PROVIDER_NOT_ALLOWED);
+        }
+
+        userRepository.findByProviderAndExternalId(Provider.GOOGLE, sub)
+                        .filter(foundUser -> !foundUser.getId().equals(userId))
+                        .ifPresent(foundUser -> {
+                            throw new AppException(GlobalErrorCode.ACCOUNT_LINK_CONFLICT);
+                        });
+
+        user.link(Provider.GOOGLE, sub);
+
+        String accessToken = jwtTokenUtil.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenUtil.generateRefreshToken(user.getId());
+
+        refreshTokenRepository.deleteByUserId(user.getId());
+        refreshTokenRepository.save(new RefreshToken(user, refreshToken));
+
+        return new LoginResponse(user.getProvider(), user.getName(), accessToken, refreshToken);
+    }
+
+    @Transactional
+    public LoginResponse linkWithKakao(Long userId, String kakaoAccessToken) {
+        return new LoginResponse(Provider.KAKAO, "", "", "");
     }
 
     @Transactional

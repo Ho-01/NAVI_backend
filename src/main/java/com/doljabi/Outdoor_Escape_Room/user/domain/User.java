@@ -30,4 +30,9 @@ public class User {
     public void updateUser(String name){
         this.name = name;
     }
+
+    public void link(Provider provider, String externalId) {
+        this.provider = provider;
+        this.externalId = externalId;
+    }
 }

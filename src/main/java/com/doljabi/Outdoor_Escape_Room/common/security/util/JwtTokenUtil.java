@@ -6,17 +6,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Component
 public class JwtTokenUtil {
     private final SecretKey secretKey;
     public JwtTokenUtil(@Value("${secretKey}") String secret){
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
-    public final long ACCESS_TOKEN_EXPIRATION = 1000*60*20; // 20분
-    public final long REFRESH_TOKEN_EXPIRATION = 1000*60*60*24*7; // 1주일
+    public final long ACCESS_TOKEN_EXPIRATION = 1000*60*120; // 120분
+    public final long REFRESH_TOKEN_EXPIRATION = 1000*60*60*24*14; // 2주일
 
     public String generateAccessToken(Long userId){
         return Jwts.builder()

@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum GlobalErrorCode {
-    INVALID_ID_TOKEN("INVALID_ID_TOKEN", "구글 ID 토큰 검증에 실패했습니다", HttpStatus.UNPROCESSABLE_ENTITY),
-    INVALID_ACCESS_TOKEN("INVALID_ACCESS_TOKEN", "카카오 액세스 토큰 검증에 실패했습니다", HttpStatus.UNPROCESSABLE_ENTITY),
+    INVALID_GOOGLE_ID_TOKEN("INVALID_GOOGLE_ID_TOKEN", "구글 ID 토큰 검증에 실패했습니다", HttpStatus.UNPROCESSABLE_ENTITY),
+    INVALID_KAKAO_ACCESS_TOKEN("INVALID_KAKAO_ACCESS_TOKEN", "카카오 액세스 토큰 검증에 실패했습니다", HttpStatus.UNPROCESSABLE_ENTITY),
+    MULTIPLE_PROVIDER_NOT_ALLOWED("MULTIPLE_PROVIDER_NOT_ALLOWED", "이미 다른 로그인 수단이 연결되어 있습니다", HttpStatus.CONFLICT),
+    ACCOUNT_LINK_CONFLICT("ACCOUNT_LINK_CONFLICT", "해당 계정은 다른 사용자에 연결되어 있습니다", HttpStatus.CONFLICT),
     INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN", "리프레시 토큰이 유효하지 않거나 만료되었습니다. 다시 로그인하세요", HttpStatus.UNAUTHORIZED),
     INVALID_REFRESH_TOKEN_FORMAT("INVALID_REFRESH_TOKEN_FORMAT", "리프레시 토큰 형식이 올바르지 않습니다", HttpStatus.UNPROCESSABLE_ENTITY),
     UNAUTHORIZED("UNAUTHORIZED", "유효한 액세스 토큰이 필요합니다", HttpStatus.UNAUTHORIZED),

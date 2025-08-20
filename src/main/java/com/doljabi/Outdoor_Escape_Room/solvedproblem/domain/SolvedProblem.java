@@ -8,8 +8,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Table(name = "solved_problem",
         uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "problem_id"})
 )
@@ -24,4 +22,10 @@ public class SolvedProblem {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @Builder
+    private SolvedProblem(Run run, Problem problem){
+        this.run = run;
+        this.problem = problem;
+    }
 }

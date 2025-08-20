@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)      // JPA 기본 생성자
-@AllArgsConstructor(access = AccessLevel.PRIVATE)       // 빌더 전용
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Problem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +19,10 @@ public class Problem {
 
     @Column(name = "answer", nullable = false)
     private String answer;    // 정답
+
+    @Builder
+    private Problem(int number, String answer){
+        this.number = number;
+        this.answer = answer;
+    }
 }

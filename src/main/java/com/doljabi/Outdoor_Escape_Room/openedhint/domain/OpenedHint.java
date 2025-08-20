@@ -7,8 +7,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Table(name = "opened_hint",
         uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "hint_id"})
 )
@@ -23,4 +21,10 @@ public class OpenedHint {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hint_id", nullable = false)
     private Hint hint;
+
+    @Builder
+    private OpenedHint(Run run, Hint hint){
+        this.run = run;
+        this.hint = hint;
+    }
 }

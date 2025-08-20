@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class GoogleLoginRequest {
-    private String idToken;
+    private String googleIdToken;
 }

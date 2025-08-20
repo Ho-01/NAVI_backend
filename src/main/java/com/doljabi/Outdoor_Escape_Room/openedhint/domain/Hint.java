@@ -7,8 +7,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Table(name = "hint",
         uniqueConstraints = @UniqueConstraint(columnNames = {"problem_id", "seq"})
 )
@@ -25,4 +23,11 @@ public class Hint {
 
     @Column(name = "seq", nullable = false)
     private int seq;
+
+    @Builder
+    private Hint(Problem problem, String hint, int seq){
+        this.problem = problem;
+        this.hint = hint;
+        this.seq = seq;
+    }
 }
