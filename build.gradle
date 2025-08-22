@@ -43,6 +43,9 @@ dependencies {
 	implementation 'com.google.api-client:google-api-client:2.6.0'
 	implementation'com.google.oauth-client:google-oauth-client-jetty:1.36.0'
 
+	// SQLite
+	implementation 'org.hibernate.orm:hibernate-community-dialects' // SQLite dialect
+	runtimeOnly 'org.xerial:sqlite-jdbc' // SQLite JDBC 드라이버
 }
 
 tasks.named('test') {
