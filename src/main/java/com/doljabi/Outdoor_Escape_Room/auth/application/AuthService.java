@@ -98,15 +98,17 @@ public class AuthService {
 
         RefreshToken stored = refreshTokenRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN));
+
         if(!refreshToken.equals(stored.getRefreshToken())){
             refreshTokenRepository.deleteByUserId(userId);
             throw new AppException(GlobalErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        refreshTokenRepository.deleteByUserId(userId);
         String newAccessToken = jwtTokenUtil.generateAccessToken(userId);
         String newRefreshToken = jwtTokenUtil.generateRefreshToken(userId);
-        refreshTokenRepository.save(new RefreshToken(stored.getUser(), newRefreshToken));
+
+        stored.update(newRefreshToken);
+
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
