@@ -4,9 +4,11 @@ import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
 import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
 import com.doljabi.Outdoor_Escape_Room.run.domain.RunRepository;
+import com.doljabi.Outdoor_Escape_Room.run.domain.Scenario;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Status;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.ClearedRunResponse;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunResponse;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunsResponse;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.LeaderboardResponse;
 import com.doljabi.Outdoor_Escape_Room.user.domain.User;
 import com.doljabi.Outdoor_Escape_Room.user.domain.UserRepository;
@@ -24,26 +26,25 @@ public class RunService {
     private UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public LeaderboardResponse findLeaderBoard() {
-        List<Run> topRuns = runRepository.findTop20ByStatusOrderByTotalPlayMsAsc(Status.CLEARED);
-        return LeaderboardResponse.fromEntityList(topRuns);
+    public LeaderboardResponse findLeaderBoard(Scenario scenario) {
+        List<Run> topRuns = runRepository.findTop20ByStatusAndScenarioOrderByTotalPlayMsAsc(Status.CLEARED, scenario);
+        return LeaderboardResponse.fromEntityList(topRuns, scenario);
     }
 
     @Transactional(readOnly = true)
-    public InProgressRunResponse findMyGame(Long userId) {
-        return runRepository.findByUserIdAndStatus(userId, Status.IN_PROGRESS)
-                .map(InProgressRunResponse::fromEntity)
-                .orElse(null);
+    public InProgressRunsResponse findMyGames(Long userId) {
+        List<Run> foundRuns = runRepository.findAllByUserIdAndStatus(userId, Status.IN_PROGRESS);
+        return InProgressRunsResponse.fromEntityList(foundRuns);
     }
 
     @Transactional
-    public InProgressRunResponse saveNewGame(Long userId) {
-        if(runRepository.findByUserIdAndStatus(userId, Status.IN_PROGRESS).isPresent()){
+    public InProgressRunResponse saveNewGame(Long userId, Scenario scenario) {
+        if(runRepository.findByUserIdAndStatusAndScenario(userId, Status.IN_PROGRESS, scenario).isPresent()){
             throw new AppException(GlobalErrorCode.IN_PROGRESS_RUN_EXISTS);
         }
         User user= userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(GlobalErrorCode.UNAUTHORIZED));
-        return InProgressRunResponse.fromEntity(runRepository.save(new Run(user)));
+        return InProgressRunResponse.fromEntity(runRepository.save(new Run(user, scenario)));
     }
 
     @Transactional

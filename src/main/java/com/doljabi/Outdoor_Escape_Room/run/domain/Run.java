@@ -22,6 +22,9 @@ public class Run {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "scenario", nullable = false)
+    private Scenario scenario;
+
     @Column(name = "started_at", nullable = false, columnDefinition = "DATETIME(3)")
     private LocalDateTime startedAt;
 
@@ -34,13 +37,17 @@ public class Run {
     @Column(name = "hint_count", nullable = false)
     private int hintCount;
 
+    @Column(name = "checkpoint")
+    private String checkpoint;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 
     @Builder
-    public Run(User user){
+    public Run(User user, Scenario scenario){
         this.user = user;
+        this.scenario = scenario;
         this.startedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         this.totalPlayMs = 0L;
         this.hintCount = 0;

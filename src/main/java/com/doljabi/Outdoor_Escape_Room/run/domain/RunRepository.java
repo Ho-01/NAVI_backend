@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RunRepository extends JpaRepository<Run, Long> {
-    List<Run> findTop20ByStatusOrderByTotalPlayMsAsc(Status status);
-
     Optional<Run> findByUserIdAndStatus(Long userId, Status status);
+
+    Optional<Run> findByUserIdAndStatusAndScenario(Long userId, Status status, Scenario scenario);
+
+    List<Run> findAllByUserIdAndStatus(Long userId, Status status);
+
+    List<Run> findTop20ByStatusAndScenarioOrderByTotalPlayMsAsc(Status status, Scenario scenario);
 }
