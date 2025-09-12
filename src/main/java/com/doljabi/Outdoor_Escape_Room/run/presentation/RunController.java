@@ -5,6 +5,7 @@ import com.doljabi.Outdoor_Escape_Room.common.security.service.CustomUserDetails
 import com.doljabi.Outdoor_Escape_Room.run.application.RunService;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Scenario;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.request.RunRequest;
+import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.request.UpdateCheckpointRequest;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.ClearedRunResponse;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunResponse;
 import com.doljabi.Outdoor_Escape_Room.run.presentation.dto.response.InProgressRunsResponse;
@@ -34,6 +35,15 @@ public class RunController {
     @GetMapping("/runs/in_progress")
     public ApiResponse<InProgressRunsResponse> getMyGames(@AuthenticationPrincipal CustomUserDetails userDetails){
         return ApiResponse.success(runService.findMyGames(userDetails.getUserId()));
+    }
+
+    @PutMapping("/runs/{runId}/checkpoint")
+    public ApiResponse<InProgressRunResponse> updateCheckpoint(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long runId,
+            @RequestBody UpdateCheckpointRequest request
+            ){
+        return ApiResponse.success(runService.updateCheckpoint(userDetails.getUserId(), runId, request.getCheckpoint()));
     }
 
     @PutMapping("/runs/{runId}")

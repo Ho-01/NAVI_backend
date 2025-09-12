@@ -48,6 +48,17 @@ public class RunService {
     }
 
     @Transactional
+    public InProgressRunResponse updateCheckpoint(Long userId, Long runId, String checkpoint) {
+        Run run = runRepository.findById(runId)
+                .orElseThrow(() -> new AppException(GlobalErrorCode.RUN_NOT_FOUND));
+        if(!userId.equals(run.getUser().getId())){
+            throw new AppException(GlobalErrorCode.UNAUTHORIZED);
+        }
+        run.updateCheckpoint(checkpoint);
+        return InProgressRunResponse.fromEntity(run);
+    }
+
+    @Transactional
     public ClearedRunResponse updateClearedRun(Long userId, Long runId) {
         Run run = runRepository.findById(runId)
                 .orElseThrow(() -> new AppException(GlobalErrorCode.RUN_NOT_FOUND));
@@ -60,4 +71,6 @@ public class RunService {
         run.cleared();
         return ClearedRunResponse.fromEntity(run);
     }
+
+
 }

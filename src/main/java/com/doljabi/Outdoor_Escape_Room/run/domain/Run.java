@@ -37,6 +37,7 @@ public class Run {
     @Column(name = "hint_count", nullable = false)
     private int hintCount;
 
+    //opening, problem1~13, ending
     @Column(name = "checkpoint")
     private String checkpoint;
 
@@ -48,6 +49,7 @@ public class Run {
     public Run(User user, Scenario scenario){
         this.user = user;
         this.scenario = scenario;
+        this.checkpoint = "opening";
         this.startedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         this.totalPlayMs = 0L;
         this.hintCount = 0;
@@ -58,5 +60,9 @@ public class Run {
         this.endedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         this.totalPlayMs = Duration.between(this.startedAt, this.endedAt).toMillis();
         this.status = Status.CLEARED;
+    }
+
+    public void updateCheckpoint(String checkpoint) {
+        this.checkpoint = checkpoint;
     }
 }

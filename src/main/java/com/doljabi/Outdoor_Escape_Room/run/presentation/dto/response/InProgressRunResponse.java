@@ -14,6 +14,7 @@ public class InProgressRunResponse {
     private Long id;
     private Scenario scenario;
     private Status status;
+    private String checkpoint;
     private int hintCount;
     private LocalDateTime startedAt;
 
@@ -22,6 +23,7 @@ public class InProgressRunResponse {
                 run.getId(),
                 run.getScenario(),
                 run.getStatus(),
+                run.getCheckpoint(),
                 run.getHintCount(),
                 run.getStartedAt()
         );
