@@ -7,29 +7,37 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ClearedRunResponse {
+public class RunResponse {
     private Long id;
     private Scenario scenario;
     private Status status;
-    private String userName;
+    private String checkpoint;
+    private int hintCount;
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
-    private String totalPlayMsText;
-    private int hintCount;
 
-    public static ClearedRunResponse fromEntity(Run run) {
-        long ms = run.getTotalPlayMs();
-        return new ClearedRunResponse(
+    public static RunResponse fromEntity(Run run) {
+        return new RunResponse(
                 run.getId(),
                 run.getScenario(),
                 run.getStatus(),
-                run.getUser().getName(),
+                run.getCheckpoint(),
+                run.getHintCount(),
                 run.getStartedAt(),
-                run.getEndedAt(),
-                String.format("%02d:%02d:%02d.%03d",ms/3_600_000,(ms%3_600_000)/60_000,(ms%60_000)/1000,ms%1000),
-                run.getHintCount());
+                run.getEndedAt()
+        );
+    }
+
+    public static List<RunResponse> fromEntityList(List<Run> runList) {
+        List<RunResponse> runResponseList = new ArrayList<>();
+        for(Run run : runList){
+            runResponseList.add(RunResponse.fromEntity(run));
+        }
+        return runResponseList;
     }
 }

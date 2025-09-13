@@ -11,6 +11,4 @@ public interface RunRepository extends JpaRepository<Run, Long> {
     Optional<Run> findByUserIdAndStatusAndScenario(Long userId, Status status, Scenario scenario);
 
     List<Run> findAllByUserIdAndStatus(Long userId, Status status);
-
-    List<Run> findTop20ByStatusAndScenarioOrderByTotalPlayMsAsc(Status status, Scenario scenario);
 }

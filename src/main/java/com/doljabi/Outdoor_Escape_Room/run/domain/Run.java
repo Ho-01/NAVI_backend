@@ -25,40 +25,35 @@ public class Run {
     @Column(name = "scenario", nullable = false)
     private Scenario scenario;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+    //opening, problem1~13, cleared
+    @Column(name = "checkpoint")
+    private String checkpoint;
+
+    @Column(name = "hint_count", nullable = false)
+    private int hintCount;
+
     @Column(name = "started_at", nullable = false, columnDefinition = "DATETIME(3)")
     private LocalDateTime startedAt;
 
     @Column(name = "ended_at", columnDefinition = "DATETIME(3)")
     private LocalDateTime endedAt;
 
-    @Column(name = "total_play_ms", nullable = false)
-    private long totalPlayMs;
-
-    @Column(name = "hint_count", nullable = false)
-    private int hintCount;
-
-    //opening, problem1~13, ending
-    @Column(name = "checkpoint")
-    private String checkpoint;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private Status status;
-
     @Builder
     public Run(User user, Scenario scenario){
         this.user = user;
         this.scenario = scenario;
-        this.checkpoint = "opening";
-        this.startedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.totalPlayMs = 0L;
-        this.hintCount = 0;
         this.status = Status.IN_PROGRESS;
+        this.checkpoint = "opening";
+        this.hintCount = 0;
+        this.startedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
     public void cleared() {
         this.endedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.totalPlayMs = Duration.between(this.startedAt, this.endedAt).toMillis();
         this.status = Status.CLEARED;
     }
 
