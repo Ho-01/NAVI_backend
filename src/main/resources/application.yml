@@ -1,3 +1,11 @@
 spring:
   profiles:
-    active: local
+    active: local   # 기본 실행 프로필을 local로 설정
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+# HikariCP read-only 오류 방지를 위해 datasource.hikari.read-only 설정은 여기 두지 않고
+# local 프로필에서 관리하는 게 깔끔함

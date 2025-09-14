@@ -2,6 +2,7 @@ package com.doljabi.Outdoor_Escape_Room.run.application;
 
 import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
 import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
+import com.doljabi.Outdoor_Escape_Room.inventory.application.InventoryService;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
 import com.doljabi.Outdoor_Escape_Room.run.domain.RunRepository;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Scenario;
@@ -23,7 +24,8 @@ public class RunService {
     private RunRepository runRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private InventoryService inventoryService;
     @Transactional
     public RunResponse saveNewGame(Long userId, Scenario scenario) {
         if(runRepository.findByUserIdAndStatusAndScenario(userId, Status.IN_PROGRESS, scenario).isPresent()){

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class InventoryUpdateResponse {
-    private Long runId;
-    private ItemCountResponse item;
+    private Long itemId;
+    private int count;
+    private String status;   // ★ 추가 (예: "UPDATED", "DELETED")
 }

@@ -14,7 +14,7 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public List<ItemResponse> findItems() {
         return ItemResponse.fromEntityList(itemRepository.findAll());
     }
