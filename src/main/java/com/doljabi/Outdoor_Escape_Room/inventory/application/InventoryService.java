@@ -49,53 +49,49 @@ public class InventoryService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No in-progress run"));
     }
 
-    @Transactional (readOnly = false)// readOnly=true 금지(SQLite 드라이버가 setReadOnly 변경을 막음)
+    @Transactional(readOnly = true)
     public InventoryResponse getMine(HttpServletRequest req) {
         Long uid = resolveUserId(req);
         Long runId = getLatestInProgressRun(uid).getId();
-
-        List<Inventory> list = inventoryRepository.findByRun_Id(runId);
+        List<Inventory> list = inventoryRepository.findByRunIdAndUserId(runId, uid);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
 
     @Transactional
     public InventoryResponse updateItem(HttpServletRequest req, Long pathItemId, InventoryUpdateRequest body) {
         Long uid = resolveUserId(req);
-        Run run = getLatestInProgressRun(uid);
+        Run run  = getLatestInProgressRun(uid);
 
-        Item item = itemRepository.findById(pathItemId)
+        itemRepository.findById(pathItemId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "item not found: " + pathItemId));
 
-        Inventory inv = inventoryRepository.findByRun_IdAndItem_Id(run.getId(), item.getId())
-                .orElseGet(() -> Inventory.builder().run(run).item(item).itemCount(0).build());
-
-        Integer reqCount = body.getCount(); // nullable
-        int n = Math.max(0, (reqCount == null ? 0 : reqCount));
-        String op = String.valueOf(body.getOperation()).toUpperCase();
-
-        switch (op) {
-            case "ADD" -> inv.addItemCount(Math.max(1, n));
-            case "SET" -> inv.setItemCount(n);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
+        String op = (body.getOperation() == null) ? "" : body.getOperation().name();
+        op = op.toUpperCase();
+        if (!op.equals("ADD") && !op.equals("SET")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
         }
 
-        inventoryRepository.save(inv);
+        int n      = (body.getCount()==null)? 0 : body.getCount();
+
+        int val    = op.equals("ADD") ? Math.max(1, n) : n;
+        int isAdd  = op.equals("ADD") ? 1 : 0;
+
+        inventoryRepository.upsert(run.getId(), pathItemId, uid, val, isAdd);
 
         List<Inventory> list = inventoryRepository.findByRun_Id(run.getId());
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
-    @Transactional
+
+
+    @Transactional(readOnly = true)
     public InventoryResponse getMineByRunId(HttpServletRequest req, Long runId) {
         Long uid = resolveUserId(req);
-
         Run run = runRepository.findById(runId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Run not found: " + runId));
-
-        if (!run.getUser().getId().equals(uid)) {
+        if (!run.getUser().getId().equals(uid))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your run");
-        }
 
-        List<Inventory> list = inventoryRepository.findByRun_Id(runId);
+        List<Inventory> list = inventoryRepository.findByRunIdAndUserId(runId, uid);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
     @Transactional
@@ -105,33 +101,25 @@ public class InventoryService {
         Run run = runRepository.findById(runId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Run not found: " + runId));
 
-        // 소유자 & 진행중 검증 (진행중만 허용하지 않을 거면 status 체크 제거)
-        if (!run.getUser().getId().equals(uid)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your run");
-        }
-        if (run.getStatus() != Status.IN_PROGRESS) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Run is not IN_PROGRESS");
-        }
+        if (!run.getUser().getId().equals(uid)) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your run");
+        if (run.getStatus() != Status.IN_PROGRESS) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Run is not IN_PROGRESS");
 
-        Item item = itemRepository.findById(itemId)
+        itemRepository.findById(itemId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "item not found: " + itemId));
 
-        Inventory inv = inventoryRepository.findByRun_IdAndItem_Id(run.getId(), item.getId())
-                .orElseGet(() -> Inventory.builder().run(run).item(item).itemCount(0).build());
-
-        Integer reqCount = body.getCount(); // nullable
-        int n = Math.max(0, (reqCount == null ? 0 : reqCount));
-        String op = String.valueOf(body.getOperation()).toUpperCase();
-
-        switch (op) {
-            case "ADD" -> inv.addItemCount(Math.max(1, n));
-            case "SET" -> inv.setItemCount(n);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
+        String op = (body.getOperation() == null) ? "" : body.getOperation().name();
+        op = op.toUpperCase();
+        if (!op.equals("ADD") && !op.equals("SET")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
         }
 
-        inventoryRepository.save(inv);
+        int n      = (body.getCount()==null)? 0 : body.getCount();
+        int val    = op.equals("ADD") ? Math.max(1, n) : n;
+        int isAdd  = op.equals("ADD") ? 1 : 0;
 
-        List<Inventory> list = inventoryRepository.findByRun_Id(run.getId());
+        inventoryRepository.upsert(runId, itemId, uid, val, isAdd);
+
+        List<Inventory> list = inventoryRepository.findByRun_Id(runId);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
-}
+    }

@@ -5,8 +5,10 @@ import com.doljabi.Outdoor_Escape_Room.inventory.presentation.dto.request.Invent
 import com.doljabi.Outdoor_Escape_Room.inventory.presentation.dto.response.InventoryResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/runs")
 @RequiredArgsConstructor
@@ -15,11 +17,14 @@ public class InventoryController {
 
     @GetMapping("/in_progress/inventory")
     public InventoryResponse getMine(HttpServletRequest req) {
+        log.info("GET /runs/in_progress/inventory");
         return inventoryService.getMine(req);
     }
 
     @GetMapping("/{runId}/inventory")
-    public InventoryResponse getMineByRun(HttpServletRequest req, @PathVariable Long runId) {
+    public InventoryResponse getMineByRun(HttpServletRequest req,
+                                          @PathVariable("runId") Long runId) { // ← 이름 명시
+        log.info(">> GET /runs/{}/inventory hit", runId);
         return inventoryService.getMineByRunId(req, runId);
     }
 
