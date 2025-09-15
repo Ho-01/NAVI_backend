@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: org.sqlite.JDBC
     # 프로젝트 루트에 local.sqlite 파일 생성 (상대 경로)
-    url: jdbc:sqlite:./app.sqlite
+    url: jdbc:sqlite:./app.sqlite?journal_mode=WAL&busy_timeout=5000
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
