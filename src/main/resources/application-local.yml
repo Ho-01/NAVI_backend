@@ -1,14 +1,15 @@
 spring:
   datasource:
-    url: jdbc:sqlite:./app.sqlite
+    url: jdbc:sqlite:./app.sqlite?journal_mode=WAL&busy_timeout=5000
     driver-class-name: org.sqlite.JDBC
     hikari:
-      maximum-pool-size: 3
+      maximum-pool-size: 1
       minimum-idle: 1
       connectionInitSql: PRAGMA foreign_keys=ON;
       read-only: false   # 중요: SQLite read-only 오류 방지
 
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
+    open-in-view: false
     hibernate:
       ddl-auto: update   # 엔티티 추가 시 테이블 자동 생성

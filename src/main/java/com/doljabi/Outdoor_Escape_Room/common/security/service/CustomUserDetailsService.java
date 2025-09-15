@@ -13,7 +13,7 @@ public class CustomUserDetailsService{
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional(readOnly=true)
+    @Transactional
     public UserDetails loadUserByUserId(Long userId) throws UsernameNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("userId: "+userId+"에 해당하는 유저 찾을 수 없음"));
