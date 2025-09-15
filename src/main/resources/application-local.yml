@@ -1,19 +1,14 @@
 spring:
   datasource:
+    url: jdbc:sqlite:./app.sqlite
     driver-class-name: org.sqlite.JDBC
-    # 프로젝트 루트에 local.sqlite 파일 생성 (상대 경로)
-    url: jdbc:sqlite:./app.sqlite?journal_mode=WAL&busy_timeout=5000
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
+      connectionInitSql: PRAGMA foreign_keys=ON;
+      read-only: false   # 중요: SQLite read-only 오류 방지
+
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: create-drop   # 처음엔 create / 이후엔 update 권장(테스트 용도)
-    open-in-view: false
-
-  # SQL 스크립트로 초기데이터 넣고 싶으면 사용 (schema.sql, data.sql)
-  sql:
-    init:
-      mode: never  # 필요하면 always로
-
+      ddl-auto: update   # 엔티티 추가 시 테이블 자동 생성

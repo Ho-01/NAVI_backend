@@ -8,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class InventoryUpdateRequest {
     private Operation operation;
-    private int count;
+    private Integer count;
 }

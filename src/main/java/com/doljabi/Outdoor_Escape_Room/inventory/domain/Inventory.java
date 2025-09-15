@@ -1,20 +1,16 @@
 package com.doljabi.Outdoor_Escape_Room.inventory.domain;
 
-import com.doljabi.Outdoor_Escape_Room.common.error.AppException;
-import com.doljabi.Outdoor_Escape_Room.common.error.GlobalErrorCode;
 import com.doljabi.Outdoor_Escape_Room.item.domain.Item;
 import com.doljabi.Outdoor_Escape_Room.run.domain.Run;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "inventory",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"run_id", "item_id"})
+@Table(
+        name = "inventory",
+        uniqueConstraints = @UniqueConstraint(name = "uk_inventory_run_item", columnNames = {"run_id","item_id"})
 )
 public class Inventory {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,24 +24,17 @@ public class Inventory {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
+    @Column(name = "item_count", nullable = false)
     private int itemCount;
 
     @Builder
     public Inventory(Run run, Item item, int itemCount){
         this.run = run;
         this.item = item;
-        this.itemCount = itemCount;
+        this.itemCount = Math.max(0, itemCount);
     }
 
-    public void update(Operation operation, int count) {
-        if(operation==Operation.ADD){
-            this.itemCount += count;
-        } else if (operation==Operation.REMOVE&&itemCount-count>0) {
-            this.itemCount -= count;
-        } else if (operation==Operation.SET&&count>=0) {
-            this.itemCount = count;
-        } else {
-            throw new AppException(GlobalErrorCode.INVALID_STATE);
-        }
-    }
+    // 변경 메서드
+    public void setItemCount(int count) { this.itemCount = Math.max(0, count); }
+    public void addItemCount(int delta) { this.itemCount = Math.max(0, this.itemCount + delta); }
 }

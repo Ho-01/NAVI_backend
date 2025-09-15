@@ -1,31 +1,42 @@
 package com.doljabi.Outdoor_Escape_Room.inventory.presentation;
 
-import com.doljabi.Outdoor_Escape_Room.common.api.ApiResponse;
-import com.doljabi.Outdoor_Escape_Room.common.security.service.CustomUserDetails;
 import com.doljabi.Outdoor_Escape_Room.inventory.application.InventoryService;
 import com.doljabi.Outdoor_Escape_Room.inventory.presentation.dto.request.InventoryUpdateRequest;
 import com.doljabi.Outdoor_Escape_Room.inventory.presentation.dto.response.InventoryResponse;
-import com.doljabi.Outdoor_Escape_Room.inventory.presentation.dto.response.InventoryUpdateResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
+@RequestMapping("/runs")
+@RequiredArgsConstructor
 public class InventoryController {
-    @Autowired
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
 
-    @PostMapping("/runs/in_progress/inventory/items/{itemId}")
-    public ApiResponse<InventoryUpdateResponse> updateMyInventory(
-            @PathVariable Long itemId,
-            @RequestBody InventoryUpdateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-            ){
-        return ApiResponse.success(inventoryService.updateInventory(userDetails.getUserId(), itemId, request));
+    @GetMapping("/in_progress/inventory")
+    public InventoryResponse getMine(HttpServletRequest req) {
+        log.info("GET /runs/in_progress/inventory");
+        return inventoryService.getMine(req);
     }
 
-    @GetMapping("/runs/in_progress/inventory")
-    public ApiResponse<InventoryResponse> openMyInventory(@AuthenticationPrincipal CustomUserDetails userDetails){
-        return ApiResponse.success(inventoryService.findMyInventory(userDetails.getUserId()));
+    @GetMapping("/{runId}/inventory")
+    public InventoryResponse getMineByRun(HttpServletRequest req,
+                                          @PathVariable("runId") Long runId) { // ← 이름 명시
+        log.info(">> GET /runs/{}/inventory hit", runId);
+        return inventoryService.getMineByRunId(req, runId);
+    }
+
+    @PostMapping("/in_progress/inventory/item/{itemId}")
+    public InventoryResponse updateItemInProgress(HttpServletRequest req, @PathVariable Long itemId,
+                                                  @RequestBody InventoryUpdateRequest body) {
+        return inventoryService.updateItem(req, itemId, body);
+    }
+
+    @PostMapping("/{runId}/inventory/item/{itemId}")
+    public InventoryResponse updateItemForRun(HttpServletRequest req, @PathVariable Long runId, @PathVariable Long itemId,
+                                              @RequestBody InventoryUpdateRequest body) {
+        return inventoryService.updateItemByRunId(req, runId, itemId, body);
     }
 }
