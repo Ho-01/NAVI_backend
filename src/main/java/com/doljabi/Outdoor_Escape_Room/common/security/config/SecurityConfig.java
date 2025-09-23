@@ -30,7 +30,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("auth/guest/start", "/auth/google/login", "/auth/kakao/login", "/auth/refresh", "/auth/logout")
+                        .requestMatchers("auth/guest/start",
+                                "/auth/google/login",
+                                "/auth/kakao/login",
+                                "/auth/refresh",
+                                "/auth/logout",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

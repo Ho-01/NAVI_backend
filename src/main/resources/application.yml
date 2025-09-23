@@ -1,11 +1,32 @@
 spring:
   profiles:
     active: local   # 기본 실행 프로필을 local로 설정
+  main:
+    lazy-initialization: true
+
+server:
+  tomcat:
+    threads:
+      max: 20
+      min-spare: 5
 
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    root: INFO
+    org.hibernate.SQL: INFO
+#    org.hibernate.SQL: debug
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 # HikariCP read-only 오류 방지를 위해 datasource.hikari.read-only 설정은 여기 두지 않고
 # local 프로필에서 관리하는 게 깔끔함
+
+## Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui
+    operations-sorter: method    # alpha|method
+    tags-sorter: alpha
+    display-request-duration: true
