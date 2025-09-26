@@ -5,6 +5,12 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### SQLite ###
+.sqlite
+.sqlite-wal
+.sqlite-shm
+.sqbpro
+
 ### STS ###
 .apt_generated
 .classpath
