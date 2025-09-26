@@ -10,7 +10,15 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "inventory",
-        uniqueConstraints = @UniqueConstraint(name = "uk_inventory_run_item", columnNames = {"run_id","item_id"})
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_inventory_run_item",
+                columnNames = {"run_id","item_id"}
+        ),
+        indexes = @Index(
+                name = "ux_inventory_run_item",
+                columnList = "run_id,item_id",
+                unique = true
+        )
 )
 public class Inventory {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

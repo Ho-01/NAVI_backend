@@ -29,7 +29,6 @@ public class InventoryService {
     private final ItemRepository itemRepository;
     private final InventoryRepository inventoryRepository;
 
-    /** JWT(SecurityContext) → 실패 시 X-User-Id 헤더로 대체 */
     private Long resolveUserId(HttpServletRequest req) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()
@@ -41,7 +40,6 @@ public class InventoryService {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No user (X-User-Id)");
     }
 
-    /** 사용자 기준 가장 최근 IN_PROGRESS run */
     private Run getLatestInProgressRun(Long userId) {
         return runRepository
                 .findTopByUser_IdAndStatusOrderByIdDesc(userId, Status.IN_PROGRESS)
@@ -52,7 +50,7 @@ public class InventoryService {
     public InventoryResponse getMine(HttpServletRequest req) {
         Long uid = resolveUserId(req);
         Long runId = getLatestInProgressRun(uid).getId();
-        List<Inventory> list = inventoryRepository.findByRunIdAndUserId(runId, uid);
+        List<Inventory> list = inventoryRepository.findByRun_Id(runId);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
 
@@ -70,17 +68,15 @@ public class InventoryService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
         }
 
-        int n      = (body.getCount()==null)? 0 : body.getCount();
+        int n     = (body.getCount()==null)? 0 : body.getCount();
+        int val   = op.equals("ADD") ? Math.max(1, n) : n;
+        int isAdd = op.equals("ADD") ? 1 : 0;
 
-        int val    = op.equals("ADD") ? Math.max(1, n) : n;
-        int isAdd  = op.equals("ADD") ? 1 : 0;
-
-        inventoryRepository.upsert(run.getId(), pathItemId, uid, val, isAdd);
+        inventoryRepository.upsert(run.getId(), pathItemId, val, isAdd);
 
         List<Inventory> list = inventoryRepository.findByRun_Id(run.getId());
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
-
 
     @Transactional(readOnly = true)
     public InventoryResponse getMineByRunId(HttpServletRequest req, Long runId) {
@@ -90,9 +86,10 @@ public class InventoryService {
         if (!run.getUser().getId().equals(uid))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your run");
 
-        List<Inventory> list = inventoryRepository.findByRunIdAndUserId(runId, uid);
+        List<Inventory> list = inventoryRepository.findByRun_Id(runId);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
+
     @Transactional
     public InventoryResponse updateItemByRunId(HttpServletRequest req, Long runId, Long itemId, InventoryUpdateRequest body) {
         Long uid = resolveUserId(req);
@@ -112,13 +109,13 @@ public class InventoryService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "operation must be ADD or SET");
         }
 
-        int n      = (body.getCount()==null)? 0 : body.getCount();
-        int val    = op.equals("ADD") ? Math.max(1, n) : n;
-        int isAdd  = op.equals("ADD") ? 1 : 0;
+        int n     = (body.getCount()==null)? 0 : body.getCount();
+        int val   = op.equals("ADD") ? Math.max(1, n) : n;
+        int isAdd = op.equals("ADD") ? 1 : 0;
 
-        inventoryRepository.upsert(runId, itemId, uid, val, isAdd);
+        inventoryRepository.upsert(runId, itemId, val, isAdd);
 
         List<Inventory> list = inventoryRepository.findByRun_Id(runId);
         return InventoryResponse.from(ItemCountResponse.fromEntityList(list));
     }
-    }
+}
